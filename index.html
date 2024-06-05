@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 60%;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        .gender-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .gender-container input {
+            margin-right: 5px;
+            margin-top: -10px;
+        }
+
+        .gender-container label {
+            margin-right: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Registration Form</h2>
+        <form id="registrationForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+            <span id="nameError" class="error"></span>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <span id="emailError" class="error"></span>
+
+            <label for="contact">Contact Number:</label>
+            <input type="text" id="contact" name="contact" placeholder="Enter your contact number (10 digits)"
+                pattern="[0-9]{10}" required>
+            <span id="contactError" class="error"></span>
+
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" placeholder="Enter your date of birth" required><br>
+            <span id="dobError" class="error"></span><br>
+
+            <label for="gender">Gender:</label>
+            <div class="gender-container">
+                <input type="radio" id="Male" name="gender" value="Male" required>
+                <label for="Male">Male</label>
+                <input type="radio" id="Female" name="gender" value="Female" required>
+                <label for="Female">Female</label>
+            </div>
+            <span id="genderError" class="error"></span>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <table id="entriesTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contact Number</th>
+                    <th>Date of Birth</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Entries will be appended here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const contact = document.getElementById('contact').value;
+            const dob = document.getElementById('dob').value;
+            const gender = document.querySelector('input[name="gender"]:checked');
+
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            const contactError = document.getElementById('contactError');
+            const dobError = document.getElementById('dobError');
+            const genderError = document.getElementById('genderError');
+
+            nameError.textContent = '';
+            emailError.textContent = '';
+            contactError.textContent = '';
+            dobError.textContent = '';
+            genderError.textContent = '';
+
+            let isValid = true;
+
+            // Name validation
+            if (!name) {
+                nameError.textContent = 'Please enter your name.';
+                isValid = false;
+            }
+
+            // Email validation
+            if (!email) {
+                emailError.textContent = 'Please enter your email.';
+                isValid = false;
+            }
+            else if (!/\S+@\S+\.\S+/.test(email)) {
+                emailError.textContent = 'Please enter a valid email address.';
+                isValid = false;
+            }
+
+            // Contact number validation
+            if (!contact) {
+                contactError.textContent = 'Please enter your contact number.';
+                isValid = false;
+            }
+            else if (!/^[0-9]{10}$/.test(contact)) {
+                contactError.textContent = 'Please enter a valid 10-digit contact number.';
+                isValid = false;
+            }
+
+            // Date of birth validation
+            if (!dob) {
+                dobError.textContent = 'Please enter your date of birth.';
+                isValid = false;
+            }
+
+            // Gender validation
+            if (!gender) {
+                genderError.textContent = 'Please select your gender.';
+                isValid = false;
+            }
+
+            if (isValid) {
+                const table = document.getElementById('entriesTable').getElementsByTagName('tbody')[0];
+                const newRow = table.insertRow();
+
+                const nameCell = newRow.insertCell(0);
+                const emailCell = newRow.insertCell(1);
+                const contactCell = newRow.insertCell(2);
+                const dobCell = newRow.insertCell(3);
+                const genderCell = newRow.insertCell(4);
+
+                nameCell.textContent = name;
+                emailCell.textContent = email;
+                contactCell.textContent = contact;
+                dobCell.textContent = dob;
+                genderCell.textContent = gender.value;
+
+                document.getElementById('registrationForm').reset();
+            }
+        });
+
+    </script>
+</body>
+
+</html>
